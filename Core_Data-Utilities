@@ -1,0 +1,57 @@
+"""
+Module: Data Utilities
+Description: Standard file parsing and automated keyword extraction utilities
+             for processing unorganized text logs and data arrays.
+"""
+
+import os
+import sys
+
+def extract_keyword_data(input_file_path, output_file_path, search_keyword):
+    """
+    Parses a specified target text file line by line, isolates records 
+    containing the designated search variable, and exports results to a new directory.
+    """
+    if not os.path.exists(input_file_path):
+        print(f"[STATUS] Operational Error: Source file '{input_file_path}' not found.")
+        return False
+
+    print(f"[STATUS] Initializing search sequence for keyword: '{search_keyword}'...")
+    match_count = 0
+
+    try:
+        with open(input_file_path, 'r', encoding='utf-8') as source_file, \
+             open(output_file_path, 'w', encoding='utf-8') as report_file:
+            
+            # Read input file data streams line by line
+            for line_number, line_content in enumerate(source_file, 1):
+                if search_keyword.lower() in line_content.lower():
+                    # Format and write data match metrics to the report file
+                    report_file.write(f"Line {line_number}: {line_content.strip()}\n")
+                    match_count += 1
+
+        print(f"[STATUS] Parse complete. Total matches isolated: {match_count}")
+        print(f"[STATUS] Output data written securely to: '{output_file_path}'")
+        return True
+
+    except Exception as data_error:
+        print(f"[STATUS] System Execution Failure: {str(data_error)}")
+        return False
+
+if __name__ == "__main__":
+    # Standard dummy variables for automated execution demonstration
+    dummy_input = "sample_data_log.txt"
+    dummy_output = "filtered_data_output.txt"
+    target_variable = "CRITICAL"
+
+    # Generate a temporary sample data file if one does not exist
+    if not os.path.exists(dummy_input):
+        with open(dummy_input, 'w', encoding='utf-8') as f:
+            f.write("Log Entry 1: System initialized successfully.\n")
+            f.write("Log Entry 2: CRITICAL - Database connection latency detected.\n")
+            f.write("Log Entry 3: Maintenance run completed.\n")
+            f.write("Log Entry 4: CRITICAL - Memory utilization threshold exceeded.\n")
+
+    # Execute the file parser module
+    extract_keyword_data(dummy_input, dummy_output, target_variable)
+
